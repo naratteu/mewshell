@@ -7,9 +7,9 @@
 
   <ItemGroup>
     <ProjectReference Include="../MewShell/MewShell.csproj" />
-    <!-- MewRazor is not on NuGet yet, so it comes from the submodule. Becomes a PackageReference
-         to Naratteu.MewUI.Razor once that is published. -->
-    <ProjectReference Include="../../external/mewrazor/src/Naratteu.MewUI.Razor/Naratteu.MewUI.Razor.csproj" />
+    <!-- PrivateAssets="none": by default a package reference keeps its analyzers to itself, and
+         whoever installs this package should get MewRazor's MEW001 check too. -->
+    <PackageReference Include="Naratteu.MewUI.Razor" Version="0.1.0-preview.1" PrivateAssets="none" />
   </ItemGroup>
 
 </Project>

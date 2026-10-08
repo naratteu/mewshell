@@ -1,0 +1,46 @@
+name: Release
+
+# Pushing a tag such as v0.1.0-preview.2 publishes all three packages at that version to nuget.org.
+# This file's name is part of the trusted publishing policy on nuget.org: rename it and
+# publishing stops until the policy is updated to match.
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # Lets the job ask GitHub for the OIDC token that nuget.org exchanges for a one-hour key.
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Test
+        run: dotnet test tests/MewShell.Tests
+
+      - name: Pack the tagged version
+        # The tag is the version, and the packages depend on each other at that same version.
+        run: |
+          for project in src/MewShell src/MewShell.MewUI src/MewShell.Razor; do
+            dotnet pack "$project" -c Release -o artifacts -p:Version=${GITHUB_REF_NAME#v} || exit 1
+          done
+
+      - name: Log in to nuget.org
+        id: login
+        uses: NuGet/login@v1
+        with:
+          user: Naratteu
+
+      - name: Push
+        run: >-
+          dotnet nuget push "artifacts/*.nupkg"
+          --api-key ${{ steps.login.outputs.NUGET_API_KEY }}
+          --source https://api.nuget.org/v3/index.json
+          --skip-duplicate

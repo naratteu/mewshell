@@ -24,6 +24,17 @@ var changes  = UseCommand(git, commit is null ? null : Sh($"git show --numstat -
 [`samples/GitView.Razor`](samples/GitView.Razor)가 이 앱 전체이고,
 [`samples/GitView.MewUI`](samples/GitView.MewUI)는 같은 앱을 MewUI로만 쓴 것입니다.
 
+## 설치
+
+```bash
+dotnet add package Naratteu.MewShell --prerelease         # 명령줄과 세션
+dotnet add package Naratteu.MewShell.MewUI --prerelease   # MewUI용 Query, Bind
+dotnet add package Naratteu.MewShell.Razor --prerelease   # MewRazor용 UseCommand와 타입 있는 선택 컴포넌트
+```
+
+UI 패키지는 코어를 함께 가져오고, `MewShell.Razor`는
+[MewRazor](https://www.nuget.org/packages/Naratteu.MewUI.Razor)와 그 MEW001 애널라이저까지 가져옵니다.
+
 ## 보간 문자열로 쓰는 명령줄
 
 ```csharp
@@ -117,8 +128,6 @@ new GridView().Bind(_changes, _change).Columns(...)
 
 ## 아직 안 된 것
 
-- **NuGet에 없습니다.** `MewShell.Razor`는 MewRazor를 서브모듈에서 빌드하므로 `--recursive`로
-  클론하세요. MewRazor가 퍼블리시되면 패키지 참조로 바뀝니다.
 - **터미널이 아닙니다.** 프로그램은 터미널이 아니라 파이프를 보므로, 색·프롬프트·페이저는 출력을
   리다이렉트했을 때처럼 동작합니다. 대부분의 도구에 그 경우를 위한 옵션(`--no-pager`, `--porcelain`,
   `NO_COLOR`)이 있습니다. 의사 터미널(PTY)은 별도 작업입니다.

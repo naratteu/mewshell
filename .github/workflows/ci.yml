@@ -13,9 +13,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          # MewRazor is not on NuGet yet; MewShell.Razor builds it from the submodule.
-          submodules: recursive
 
       - uses: actions/setup-dotnet@v4
         with:

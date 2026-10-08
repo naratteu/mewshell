@@ -24,6 +24,17 @@ user picks goes into the next command line as an argument, and the command line 
 when to run again. [`samples/GitView.Razor`](samples/GitView.Razor) is this, whole, and
 [`samples/GitView.MewUI`](samples/GitView.MewUI) is the same app in plain MewUI.
 
+## Install
+
+```bash
+dotnet add package Naratteu.MewShell --prerelease         # command lines and sessions
+dotnet add package Naratteu.MewShell.MewUI --prerelease   # Query and Bind, for MewUI
+dotnet add package Naratteu.MewShell.Razor --prerelease   # UseCommand and typed selectors, for MewRazor
+```
+
+The UI packages bring the core with them, and `MewShell.Razor` brings
+[MewRazor](https://www.nuget.org/packages/Naratteu.MewUI.Razor) along with its MEW001 analyzer.
+
 ## Command lines as interpolated strings
 
 ```csharp
@@ -122,8 +133,6 @@ binary is 2.9 MB; the git explorer samples publish to 5.3 MB (MewUI) and 6.1 MB 
 
 ## Not done yet
 
-- **Not on NuGet.** `MewShell.Razor` builds MewRazor from a submodule, so clone with
-  `--recursive`. It becomes a package reference once MewRazor is published.
 - **No terminal.** A program sees a pipe, not a terminal, so colours, prompts and pagers behave as
   they do when output is redirected. Most tools have flags for that (`--no-pager`, `--porcelain`,
   `NO_COLOR`); a pseudo-terminal is a separate piece of work.

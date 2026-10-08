@@ -13,9 +13,6 @@
   <ItemGroup>
     <PackageReference Include="Aprillz.MewUI.MacOS" Version="0.21.1" />
     <ProjectReference Include="../../src/MewShell.Razor/MewShell.Razor.csproj" />
-    <ProjectReference Include="../../external/mewrazor/src/Naratteu.MewUI.Razor.Analyzers/Naratteu.MewUI.Razor.Analyzers.csproj"
-                      OutputItemType="Analyzer"
-                      ReferenceOutputAssembly="false" />
   </ItemGroup>
 
 </Project>
