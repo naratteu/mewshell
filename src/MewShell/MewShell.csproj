@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageId>Naratteu.MewShell</PackageId>
+    <Description>Command lines as interpolated strings: each value is one argument, no shell in between, and every run belongs to a session that can cancel it.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CliWrap" Version="3.10.5" />
+  </ItemGroup>
+
+</Project>

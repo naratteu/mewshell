@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/MewShell/MewShell.csproj" />
+    <Project Path="src/MewShell.MewUI/MewShell.MewUI.csproj" />
+    <Project Path="src/MewShell.Razor/MewShell.Razor.csproj" />
+  </Folder>
+  <Folder Name="/samples/">
+    <Project Path="samples/GitView.MewUI/GitView.MewUI.csproj" />
+    <Project Path="samples/GitView.Razor/GitView.Razor.csproj" />
+    <Project Path="samples/Top.MewUI/Top.MewUI.csproj" />
+    <Project Path="samples/Top.Razor/Top.Razor.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MewShell.Tests/MewShell.Tests.csproj" />
+  </Folder>
+</Solution>

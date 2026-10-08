@@ -1,0 +1,77 @@
+@inherits ObservableComponent
+@{
+    var shell = UseMemo(() => Session.Default with { Log = line => Console.WriteLine($"[run] {line}") });
+
+    // Polling is a stream over time, which is what R3 is for: tick every second, skip a tick while
+    // the previous probe is still running, and re-render only when the text actually changed.
+    var live = UseObservable(() => Observable.Timer(TimeSpan.Zero, TimeSpan.FromSeconds(1))
+        .SelectAwait((_, ct) => Probe(shell, ct), AwaitOperation.Drop)
+        .DistinctUntilChanged(), "…");
+
+    var (pattern, setPattern) = UseState("dotnet");
+    var (matches, setMatches) = UseState((Lines: "", Status: ""));
+
+    // Re-running on a change needs no stream: an effect keyed on the pattern already is switchMap.
+    // A newer pattern runs this cleanup first, and cancelling kills the pgrep still in flight.
+    UseEffect(() =>
+    {
+        var cancel = new CancellationTokenSource();
+        _ = SearchAsync(pattern, cancel.Token);
+        return cancel.Cancel;
+    }, pattern);
+
+    async Task SearchAsync(string text, CancellationToken ct)
+    {
+        try
+        {
+            await Task.Delay(250, ct); // debounce: another keystroke inside 250 ms cancels this first
+            setMatches(await Search(shell, text, ct));
+        }
+        catch (OperationCanceledException)
+        {
+        }
+    }
+}
+
+<MewWindow Title="Top — MewRazor" Width="640" Height="440" OnLoaded="@(() => (_filter?.NativeElement as TextBox)?.Focus())">
+    <MewStackPanel Spacing="10" Margin="20">
+        <MewTextBlock Text="Mew Top" FontSize="22" FontWeight="FontWeight.Bold" />
+        <MewTextBlock Text="@live" FontFamily="Menlo" />
+        <MewTextBox @ref="_filter" Value="@pattern" ValueChanged="setPattern" />
+        <MewTextBlock Text="@matches.Status" FontSize="12" />
+        <MewTextBlock Text="@matches.Lines" FontFamily="Menlo" FontSize="11" TextWrapping="TextWrapping.NoWrap" />
+    </MewStackPanel>
+</MewWindow>
+
+@code {
+    private MewTextBox? _filter;
+
+    private static async ValueTask<string> Probe(Session shell, CancellationToken ct)
+    {
+        var time = await shell.Sh($"date +%T").RunAsync(ct);
+        var load = await shell.Sh($"sysctl -n vm.loadavg").RunAsync(ct);
+        return $"{time.Text()}   load {load.Text().Trim('{', '}', ' ')}";
+    }
+
+    private static async Task<(string Lines, string Status)> Search(Session shell, string pattern, CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(pattern)) return ("", "Type part of a process name.");
+
+        var clock = System.Diagnostics.Stopwatch.StartNew();
+        try
+        {
+            // pgrep exits 1 when nothing matches, which is an answer here, not a failure.
+            var result = await shell.NoThrow().Sh($"pgrep -l {pattern}").RunAsync(ct);
+            var lines = result.Text().Split('\n', StringSplitOptions.RemoveEmptyEntries);
+
+            return (
+                string.Join('\n', lines.Take(12)),
+                $"{lines.Length} processes match \"{pattern}\"  ({clock.ElapsedMilliseconds} ms)");
+        }
+        catch (OperationCanceledException)
+        {
+            Console.WriteLine($"[killed] pgrep -l {pattern} -- superseded after {clock.ElapsedMilliseconds} ms");
+            throw;
+        }
+    }
+}

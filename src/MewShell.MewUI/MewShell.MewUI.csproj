@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageId>Naratteu.MewShell.MewUI</PackageId>
+    <Description>Bind command output to MewUI lists, drop-downs and grids, and a selection back into the next command's arguments.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aprillz.MewUI.Core" Version="0.21.1" />
+    <ProjectReference Include="../MewShell/MewShell.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,59 @@
+@inherits ShellComponent
+@{
+    // Every command line is echoed, so the terminal shows what each pick ran.
+    var git = UseMemo(() => Session.Default.In(Repository) with { Log = line => Console.WriteLine($"[run] {line}") });
+
+    // What the user has picked. Each one is an argument of the next command.
+    var (branch, setBranch) = UseState<string?>("main");
+    var (commit, setCommit) = UseState<Commit?>(null);
+    var (change, setChange) = UseState<Change?>(null);
+    var (status, setStatus) = UseState("");
+
+    // Read top to bottom, this is the whole data flow. A command runs again when its command line
+    // changes -- the values interpolated into it are its dependencies -- and the old run is killed.
+    var branches = UseCommand(git, Sh($"git for-each-ref --format=%(refname:short) refs/heads"), r => r.Lines());
+    var commits = UseCommand(git, branch is null ? null : Sh($"git log --date=short --format=%h%x09%ad%x09%an%x09%s -n 300 {branch}"), Commit.Parse);
+    var changes = UseCommand(git, commit is null ? null : Sh($"git show --numstat --format= {commit.Hash}"), Change.Parse);
+    var diff = UseCommand(git, commit is null || change is null ? null : Sh($"git show --format= {commit.Hash} -- {change.Path}"), Head);
+
+    // A button runs a command, then refreshes what depends on it.
+    async Task Fetch()
+    {
+        setStatus("Fetching…");
+        var result = await git.NoThrow().Sh($"git fetch --prune").RunAsync();
+        setStatus(result.ExitCode == 0 ? $"Fetched at {DateTime.Now:T}" : result.Stderr.Trim());
+        branches.Refresh();
+    }
+}
+
+<MewWindow Title="Git — MewRazor" Width="1100" Height="720">
+    <MewDockPanel Spacing="10" Margin="16">
+        <MewStackPanel Dock="Dock.Top" Orientation="Orientation.Horizontal" Spacing="8">
+            <MewDropdown TItem="string" Items="branches.Value" Selected="branch" SelectedChanged="setBranch" Width="220" />
+            <MewButton Text="Fetch" OnClick="Fetch" />
+            <MewTextBlock Text="@status" VerticalAlignment="VerticalAlignment.Center" />
+        </MewStackPanel>
+        <MewGrid Columns="440,*" Rows="2*,3*" Spacing="10">
+            <MewList TItem="Commit" RowSpan="2" Items="commits.Value" Selected="commit" SelectedChanged="setCommit"
+                     Text="@(c => $"{c.Hash}  {c.Date}  {c.Subject}")" />
+            <MewTable TItem="Change" Column="1" Items="changes.Value" Columns="ChangeColumns" Selected="change" SelectedChanged="setChange" />
+            <MewScrollViewer Row="1" Column="1">
+                <MewTextBlock Text="@(diff.Value ?? "")" FontFamily="Menlo" FontSize="11" />
+            </MewScrollViewer>
+        </MewGrid>
+    </MewDockPanel>
+</MewWindow>
+
+@code {
+    private static readonly string Repository =
+        Environment.GetCommandLineArgs().ElementAtOrDefault(1) ?? Environment.CurrentDirectory;
+
+    private static readonly GridViewColumn<Change>[] ChangeColumns =
+    [
+        new GridViewColumn<Change>().Header("+").PixelWidth(56).Text(c => c.Added),
+        new GridViewColumn<Change>().Header("−").PixelWidth(56).Text(c => c.Deleted),
+        new GridViewColumn<Change>().Header("File").StarWidth().Text(c => c.Path),
+    ];
+
+    private static string Head(ShResult diff) => string.Join('\n', diff.Stdout.Split('\n').Take(400));
+}

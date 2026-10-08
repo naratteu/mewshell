@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    # Tests run real processes (sh, seq, printf, git...), which every Linux runner has. The
+    # samples target macOS, but build anywhere; running them needs a Mac.
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # MewRazor is not on NuGet yet; MewShell.Razor builds it from the submodule.
+          submodules: recursive
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Build the libraries
+        run: |
+          dotnet build src/MewShell -warnaserror
+          dotnet build src/MewShell.MewUI -warnaserror
+          dotnet build src/MewShell.Razor -warnaserror
+
+      - name: Test
+        run: dotnet test tests/MewShell.Tests
+
+      - name: Build the samples
+        run: |
+          for sample in samples/*/; do
+            dotnet build "$sample" || exit 1
+          done
+
+      - name: Verify the core survives NativeAOT
+        # Trimming breaks things at runtime, not at build, so the probe is published and then run.
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends clang zlib1g-dev
+          dotnet publish eng/aottest -c Release -r linux-x64
+          ./eng/aottest/bin/Release/net10.0/linux-x64/publish/aottest

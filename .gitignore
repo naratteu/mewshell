@@ -1,0 +1,7 @@
+bin/
+obj/
+*.user
+.DS_Store
+artifacts/
+build.log
+*.log

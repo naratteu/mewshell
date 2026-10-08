@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageId>Naratteu.MewShell.Razor</PackageId>
+    <Description>UseCommand for MewRazor: a command that re-runs when the values interpolated into it change, plus typed list, drop-down and table components.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../MewShell/MewShell.csproj" />
+    <!-- MewRazor is not on NuGet yet, so it comes from the submodule. Becomes a PackageReference
+         to Naratteu.MewUI.Razor once that is published. -->
+    <ProjectReference Include="../../external/mewrazor/src/Naratteu.MewUI.Razor/Naratteu.MewUI.Razor.csproj" />
+  </ItemGroup>
+
+</Project>
