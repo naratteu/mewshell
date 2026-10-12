@@ -40,6 +40,11 @@ jobs:
             dotnet build "$app" || exit 1
           done
 
+      - name: Check the gallery page shows the current source
+        run: |
+          dotnet run eng/gallery.cs
+          git diff --exit-code docs/gallery/README.md
+
       - name: Verify the core survives NativeAOT
         # Trimming breaks things at runtime, not at build, so the probe is published and then run.
         run: |

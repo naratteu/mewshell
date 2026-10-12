@@ -114,17 +114,19 @@ new GridView().Bind(_changes, _change).Columns(...)
 
 ## 갤러리
 
+**[스크린샷 아래에 앱 전체 소스가 있는 갤러리 페이지 →](docs/gallery/README.md)**
+
 앱 하나가 `.cs` 파일 하나입니다. `dotnet run <파일>.cs`로 실행하고, `dotnet publish <파일>.cs`로
 NativeAOT 실행 파일 하나를 만듭니다. 실행 파일은 .NET 설치 없이 돌아갑니다. 줄 수에서 주석, 빈 줄,
 OS별 플랫폼을 고르는 10줄 블록은 뺐습니다.
 
 | | |
 | --- | --- |
-| ![gitview](docs/gallery/gitview.png) | **[gitview.cs](agent/skills/mewshell/gallery/gitview.cs)**: 47줄, 5.4MB<br>브랜치 → 커밋 → 바뀐 파일 → diff, 그리고 Fetch. 고른 값이 다음 `git` 명령의 인자가 됩니다. |
-| ![issues](docs/gallery/issues.png) | **[issues.cs](agent/skills/mewshell/gallery/issues.cs)**: 38줄, 6.0MB<br>`gh --json`으로 저장소 → 이슈 → 본문. 검색창과 고른 저장소가 쿼리 하나에 함께 들어갑니다. |
-| ![procs](docs/gallery/procs.png) | **[procs.cs](agent/skills/mewshell/gallery/procs.cs)**: 47줄, 5.6MB<br>2초마다 `ps`, 필터 입력창, 선택한 행 Kill. 갱신돼도 선택이 유지됩니다. |
-| ![pinger](docs/gallery/pinger.png) | **[pinger.cs](agent/skills/mewshell/gallery/pinger.cs)**: 33줄, 5.3MB<br>오래 도는 명령의 출력을 한 줄씩 스트리밍합니다. Stop을 누르면 프로세스가 종료됩니다. |
-| ![brewview](docs/gallery/brewview.png) | **[brewview.cs](agent/skills/mewshell/gallery/brewview.cs)**: 67줄, 6.0MB<br>Homebrew 포뮬러, "Outdated only" 체크박스, 상세 패널. 맥락 없는 새 에이전트가 [skill](#에이전트-skill)만 보고 작성한 시험 결과물입니다. |
+| ![gitview](docs/gallery/gitview.png) | **[gitview.cs](docs/gallery/README.md#gitviewcs)**: 47줄, 5.4MB<br>브랜치 → 커밋 → 바뀐 파일 → diff, 그리고 Fetch. 고른 값이 다음 `git` 명령의 인자가 됩니다. |
+| ![issues](docs/gallery/issues.png) | **[issues.cs](docs/gallery/README.md#issuescs)**: 38줄, 6.0MB<br>`gh --json`으로 저장소 → 이슈 → 본문. 검색창과 고른 저장소가 쿼리 하나에 함께 들어갑니다. |
+| ![procs](docs/gallery/procs.png) | **[procs.cs](docs/gallery/README.md#procscs)**: 47줄, 5.6MB<br>2초마다 `ps`, 필터 입력창, 선택한 행 Kill. 갱신돼도 선택이 유지됩니다. |
+| ![pinger](docs/gallery/pinger.png) | **[pinger.cs](docs/gallery/README.md#pingercs)**: 33줄, 5.3MB<br>오래 도는 명령의 출력을 한 줄씩 스트리밍합니다. Stop을 누르면 프로세스가 종료됩니다. |
+| ![brewview](docs/gallery/brewview.png) | **[brewview.cs](docs/gallery/README.md#brewviewcs)**: 67줄, 6.0MB<br>Homebrew 포뮬러, "Outdated only" 체크박스, 상세 패널. 맥락 없는 새 에이전트가 [skill](#에이전트-skill)만 보고 작성한 시험 결과물입니다. |
 
 크기는 macOS arm64 기준이고, Linux arm64 실행 파일은 1MB쯤 더 큽니다. 같은 파일이 Linux에서도
 돌아가는 것을 Xvfb에서 확인했습니다. Windows용으로도 컴파일되지만 아직 실행해 보지는 않았습니다.
