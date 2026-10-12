@@ -35,6 +35,9 @@ dotnet add package Naratteu.MewShell.Razor --prerelease   # UseCommand and typed
 The UI packages bring the core with them, and `MewShell.Razor` brings
 [MewRazor](https://www.nuget.org/packages/Naratteu.MewUI.Razor) along with its MEW001 analyzer.
 
+To have an agent write the whole GUI as one file and publish it as one executable, install the
+[mewshell skill](https://github.com/naratteu/mewshell-skill): `/plugin marketplace add naratteu/mewshell-skill`.
+
 ## Command lines as interpolated strings
 
 ```csharp

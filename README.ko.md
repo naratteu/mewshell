@@ -35,6 +35,9 @@ dotnet add package Naratteu.MewShell.Razor --prerelease   # MewRazor용 UseComma
 UI 패키지는 코어를 함께 가져오고, `MewShell.Razor`는
 [MewRazor](https://www.nuget.org/packages/Naratteu.MewUI.Razor)와 그 MEW001 애널라이저까지 가져옵니다.
 
+에이전트가 GUI 전체를 파일 하나로 작성하고 실행 파일 하나로 배포하게 하려면
+[mewshell skill](https://github.com/naratteu/mewshell-skill)을 설치하세요: `/plugin marketplace add naratteu/mewshell-skill`.
+
 ## 보간 문자열로 쓰는 명령줄
 
 ```csharp
