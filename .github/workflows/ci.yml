@@ -33,6 +33,13 @@ jobs:
             dotnet build "$sample" || exit 1
           done
 
+      - name: Build the gallery
+        # Each gallery app is a file-based app pinned to the published packages, as a reader copies it.
+        run: |
+          for app in agent/skills/mewshell/gallery/*.cs; do
+            dotnet build "$app" || exit 1
+          done
+
       - name: Verify the core survives NativeAOT
         # Trimming breaks things at runtime, not at build, so the probe is published and then run.
         run: |

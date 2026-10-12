@@ -35,8 +35,8 @@ dotnet add package Naratteu.MewShell.Razor --prerelease   # MewRazor용 UseComma
 UI 패키지는 코어를 함께 가져오고, `MewShell.Razor`는
 [MewRazor](https://www.nuget.org/packages/Naratteu.MewUI.Razor)와 그 MEW001 애널라이저까지 가져옵니다.
 
-에이전트가 GUI 전체를 파일 하나로 작성하고 실행 파일 하나로 배포하게 하려면
-[mewshell skill](https://github.com/naratteu/mewshell-skill)을 설치하세요: `/plugin marketplace add naratteu/mewshell-skill`.
+에이전트가 GUI 전체를 파일 하나로 작성하고 실행 파일 하나로 배포하게 하려면 [갤러리](#갤러리)와
+[에이전트 skill](#에이전트-skill)을 보세요.
 
 ## 보간 문자열로 쓰는 명령줄
 
@@ -111,6 +111,53 @@ new GridView().Bind(_changes, _change).Columns(...)
 추적 장치도 없고, 명령과 맞춰 관리해야 할 의존성 목록도 없습니다. 명령줄이 이미 자기가 무엇에
 의존하는지 말하고 있습니다. MewUI에는 람다를 다시 평가할 렌더 루프가 없어서, 그쪽의 `Query`는 입력을
 명시적으로 받습니다.
+
+## 갤러리
+
+앱 하나가 `.cs` 파일 하나입니다. `dotnet run <파일>.cs`로 실행하고, `dotnet publish <파일>.cs`로
+NativeAOT 실행 파일 하나를 만듭니다. 실행 파일은 .NET 설치 없이 돌아갑니다. 줄 수에서 주석, 빈 줄,
+OS별 플랫폼을 고르는 10줄 블록은 뺐습니다.
+
+| | |
+| --- | --- |
+| ![gitview](docs/gallery/gitview.png) | **[gitview.cs](agent/skills/mewshell/gallery/gitview.cs)**: 47줄, 5.4MB<br>브랜치 → 커밋 → 바뀐 파일 → diff, 그리고 Fetch. 고른 값이 다음 `git` 명령의 인자가 됩니다. |
+| ![issues](docs/gallery/issues.png) | **[issues.cs](agent/skills/mewshell/gallery/issues.cs)**: 38줄, 6.0MB<br>`gh --json`으로 저장소 → 이슈 → 본문. 검색창과 고른 저장소가 쿼리 하나에 함께 들어갑니다. |
+| ![procs](docs/gallery/procs.png) | **[procs.cs](agent/skills/mewshell/gallery/procs.cs)**: 47줄, 5.6MB<br>2초마다 `ps`, 필터 입력창, 선택한 행 Kill. 갱신돼도 선택이 유지됩니다. |
+| ![pinger](docs/gallery/pinger.png) | **[pinger.cs](agent/skills/mewshell/gallery/pinger.cs)**: 33줄, 5.3MB<br>오래 도는 명령의 출력을 한 줄씩 스트리밍합니다. Stop을 누르면 프로세스가 종료됩니다. |
+| ![brewview](docs/gallery/brewview.png) | **[brewview.cs](agent/skills/mewshell/gallery/brewview.cs)**: 67줄, 6.0MB<br>Homebrew 포뮬러, "Outdated only" 체크박스, 상세 패널. 맥락 없는 새 에이전트가 [skill](#에이전트-skill)만 보고 작성한 시험 결과물입니다. |
+
+크기는 macOS arm64 기준이고, Linux arm64 실행 파일은 1MB쯤 더 큽니다. 같은 파일이 Linux에서도
+돌아가는 것을 Xvfb에서 확인했습니다. Windows용으로도 컴파일되지만 아직 실행해 보지는 않았습니다.
+
+## 에이전트 skill
+
+[`agent/skills/mewshell`](agent/skills/mewshell)은 코딩 에이전트가 어떤 명령줄 도구에 대해서든 위와 같은
+작업을 하도록 가르칩니다.
+
+1. 도구의 도움말을 읽습니다.
+2. 기계가 읽기 좋은 출력 형식을 고릅니다.
+3. 갤러리를 바탕으로 파일 하나를 씁니다.
+4. 실행해서 조작해 봅니다.
+5. 실행 파일을 배포합니다.
+6. 무엇을 확인했는지 보고합니다.
+
+설치는 다음 중 하나로 합니다.
+
+```text
+/plugin marketplace add naratteu/mewshell        # Claude Code. 그다음:
+/plugin install mewshell@naratteu
+
+copilot plugin marketplace add naratteu/mewshell # GitHub Copilot. 그다음:
+copilot plugin install mewshell@naratteu
+
+gh skill install naratteu/mewshell mewshell --agent claude-code --scope user   # gh가 지원하는 모든 에이전트
+```
+
+Codex에서는 `$skill-installer`를 실행하고 `naratteu/mewshell`의 `mewshell` skill을 요청하세요. 폴더를
+`.claude/skills/`, `.agents/skills/`, `.github/skills/`에 직접 복사해도 됩니다. 그다음 GUI를 요청하면 됩니다.
+
+> docker GUI 만들어 줘. 실행 중인 컨테이너를 표로 보여 주고, 하나 고르면 아래에 로그가 실시간으로
+> 흐르게. Stop, Restart 버튼도 넣고 실행 파일 하나로 배포해 줘.
 
 ## 샘플
 

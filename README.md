@@ -35,8 +35,8 @@ dotnet add package Naratteu.MewShell.Razor --prerelease   # UseCommand and typed
 The UI packages bring the core with them, and `MewShell.Razor` brings
 [MewRazor](https://www.nuget.org/packages/Naratteu.MewUI.Razor) along with its MEW001 analyzer.
 
-To have an agent write the whole GUI as one file and publish it as one executable, install the
-[mewshell skill](https://github.com/naratteu/mewshell-skill): `/plugin marketplace add naratteu/mewshell-skill`.
+To have an agent write a whole GUI as one file and publish it as one executable, see the
+[gallery](#gallery) and the [agent skill](#agent-skill).
 
 ## Command lines as interpolated strings
 
@@ -116,6 +116,53 @@ nothing runs. A null command runs nothing, which is how "no commit picked yet" i
 There is no tracking and no list of dependencies to keep in step with the command; the command line
 already says what it depends on. MewUI has no render loop to re-evaluate a lambda, so there a
 `Query` takes its inputs explicitly instead.
+
+## Gallery
+
+Each app is one `.cs` file. `dotnet run <file>.cs` runs it, and `dotnet publish <file>.cs` turns it
+into one NativeAOT executable with no .NET to install. Line counts leave out comments, blank lines
+and the 10-line block that picks the platform for each OS.
+
+| | |
+| --- | --- |
+| ![gitview](docs/gallery/gitview.png) | **[gitview.cs](agent/skills/mewshell/gallery/gitview.cs)**: 47 lines, 5.4 MB<br>Branches → commits → changed files → diff, plus Fetch. Each pick is an argument of the next `git` command. |
+| ![issues](docs/gallery/issues.png) | **[issues.cs](agent/skills/mewshell/gallery/issues.cs)**: 38 lines, 6.0 MB<br>Repositories → issues → body, from `gh --json`. A search box and the picked repository feed one query. |
+| ![procs](docs/gallery/procs.png) | **[procs.cs](agent/skills/mewshell/gallery/procs.cs)**: 47 lines, 5.6 MB<br>`ps` every two seconds, a filter box, and Kill on the selected row. The selection survives each refresh. |
+| ![pinger](docs/gallery/pinger.png) | **[pinger.cs](agent/skills/mewshell/gallery/pinger.cs)**: 33 lines, 5.3 MB<br>A long-running command streamed line by line. Stop kills the process. |
+| ![brewview](docs/gallery/brewview.png) | **[brewview.cs](agent/skills/mewshell/gallery/brewview.cs)**: 67 lines, 6.0 MB<br>Homebrew formulae with an "Outdated only" check box and a details pane. A fresh agent wrote it from [the skill](#agent-skill) alone, as a test. |
+
+Sizes are for macOS arm64; Linux arm64 executables come out about 1 MB larger. The same files run on
+Linux, tested under Xvfb. They compile for Windows, but have not been run there yet.
+
+## Agent skill
+
+[`agent/skills/mewshell`](agent/skills/mewshell) teaches a coding agent to do the above for any
+command-line tool:
+
+1. read the tool's help,
+2. pick its machine-readable output,
+3. write one file from the gallery,
+4. run and exercise it,
+5. publish the executable,
+6. report what it checked.
+
+Install it with one of these:
+
+```text
+/plugin marketplace add naratteu/mewshell        # Claude Code, then:
+/plugin install mewshell@naratteu
+
+copilot plugin marketplace add naratteu/mewshell # GitHub Copilot, then:
+copilot plugin install mewshell@naratteu
+
+gh skill install naratteu/mewshell mewshell --agent claude-code --scope user   # any agent gh supports
+```
+
+In Codex, run `$skill-installer` and ask for the `mewshell` skill from `naratteu/mewshell`. Or copy
+the folder into `.claude/skills/`, `.agents/skills/` or `.github/skills/`. Then ask for a GUI:
+
+> Make me a GUI for docker: running containers in a table, their logs streaming below when I pick
+> one, and Stop and Restart buttons. Publish it as one executable.
 
 ## Samples
 

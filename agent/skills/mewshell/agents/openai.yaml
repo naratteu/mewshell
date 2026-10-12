@@ -1,0 +1,4 @@
+interface:
+  display_name: "MewShell"
+  short_description: "Wrap a command-line tool in a one-file desktop GUI"
+  default_prompt: "Use $mewshell to build a desktop GUI over this command-line tool as one C# file, and publish it as a single executable."

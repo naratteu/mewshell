@@ -1,0 +1,19 @@
+{
+  "name": "naratteu",
+  "owner": {
+    "name": "naratteu",
+    "url": "https://github.com/naratteu"
+  },
+  "metadata": {
+    "description": "MewShell agent skill for wrapping command-line tools in one-file desktop GUIs",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "mewshell",
+      "source": "./agent",
+      "description": "Wrap any command-line tool in an interactive desktop GUI written as one C# file, and publish it as one small native executable.",
+      "version": "0.1.0"
+    }
+  ]
+}

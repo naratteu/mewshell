@@ -1,0 +1,6 @@
+{
+  "name": "mewshell",
+  "version": "0.1.0",
+  "description": "Wrap any command-line tool in an interactive desktop GUI written as one C# file, and publish it as one small native executable.",
+  "skills": "./skills/"
+}
